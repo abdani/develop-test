@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-WHyhn8L0D6Jv55TeH9mDPc0nCmYPtzmevL4/V7IFIvg='; style-src 'self'; img-src 'self' data: blob: https://nilaigizi-api.daniabdani1.workers.dev; font-src 'self'; connect-src https://nilaigizi-api.daniabdani1.workers.dev; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin - Kelola Menu Gizi</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7a1420">
+<meta name="apple-mobile-web-app-title" content="Admin Gizi">
+<script>try{if(sessionStorage.getItem('mbg_sesi'))document.documentElement.classList.add('masuk')}catch(e){}</script>
+</head>
+<body class="admin">
+
+<main>
+<div id="loginScreen">
+  <div class="panel login-panel">
+    <h1>Admin Login</h1>
+    <p class="none">Akses terbatas untuk pengelola konten menu gizi.</p>
+    <div class="field">
+      <label class="req" for="loginUsername">Username</label>
+      <input type="text" id="loginUsername" name="username" autocomplete="username" maxlength="40"
+             autocapitalize="none" autocorrect="off" spellcheck="false">
+    </div>
+    <div class="field">
+      <label class="req" for="loginPassword">Password</label>
+      <div class="pw-wrap">
+        <input type="password" id="loginPassword" name="password" autocomplete="current-password"
+               autocapitalize="none" autocorrect="off" spellcheck="false">
+        <button type="button" class="pw-mata" data-klik="mata"></button>
+      </div>
+      <div class="error-msg" id="loginError"></div>
+    </div>
+    <button class="btn" id="loginBtn" data-klik="login">Masuk</button>
+    <p class="none login-kaki">Lupa password? Hubungi Super Admin. Setelah 5 kali salah, akun dikunci 1 jam.</p>
+  </div>
+</div>
+
+<div id="appScreen" hidden>
+  <header class="top">
+    <h1>Kelola Menu Gizi</h1>
+    <p>Setiap perubahan langsung tersimpan ke server &middot; pengunjung melihatnya seketika</p>
+  </header>
+
+  <div class="status-baris">
+    <div class="notice" id="statusBar" hidden></div>
+    <div class="notif khusus-super" id="notif">
+      <button type="button" class="notif-tombol" id="notifTombol" data-klik="notif"
+              aria-label="Aktivitas terbaru" title="Aktivitas terbaru" aria-expanded="false" aria-controls="kartuNotif">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <span class="notif-lencana" id="notifLencana" hidden></span>
+      </button>
+      <div class="kartu-notif" id="kartuNotif" hidden>
+        <div class="kartu-notif-kepala">
+          <strong>Aktivitas terbaru</strong>
+          <button type="button" class="btn ghost small" data-klik="aktivitas" title="Muat ulang aktivitas">&#8635;</button>
+        </div>
+        <div id="notifIsi"></div>
+        <p class="kartu-notif-kaki">10 perubahan menu &amp; kontak terakhir &middot; tersimpan 60 hari</p>
+      </div>
+    </div>
+  </div>
+  <div class="notice bahaya" id="gandaNotice" hidden></div>
+  <div class="notice khusus-super" id="cadanganNotice" role="status" hidden></div>
+
+  <div class="wrap">
+    <div class="toolbar">
+      <input type="search" class="search" id="search" placeholder="Cari menu..." aria-label="Cari menu, deskripsi, tanggal, atau hari">
+      <select id="filterBulan" aria-label="Filter bulan"></select>
+      <div class="aksi">
+        <div class="aksi-data">
+          <button class="btn ghost" data-klik="muat">&#8635; Muat Ulang</button>
+          <button class="btn ghost khusus-super" data-klik="cadangkan">&#8595; Cadangkan<span class="lengkap"> data.js</span></button>
+          <button class="btn ghost khusus-super" data-klik="pulihkan">&#8593; Pulihkan<span class="lengkap"> dari data.js</span></button>
+          <input type="file" accept=".js" id="importFile" hidden data-ubah="impor">
+        </div>
+        <div class="aksi-utama">
+          <button class="btn" data-klik="tambah">+ Tambah Menu</button>
+          <details class="akun" id="akun">
+            <summary class="avatar" aria-label="Menu akun" title="Akun">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8" r="4.2"/><path d="M3.5 21c.8-4.4 4.2-7 8.5-7s7.7 2.6 8.5 7z"/></svg>
+            </summary>
+            <div class="akun-menu">
+              <div class="akun-kepala">
+                <strong id="akunNama">Pengelola Menu Gizi</strong>
+                <span id="akunPeran">SPPG Siringagung 3</span>
+              </div>
+              <dl class="akun-info">
+                <dt>Status</dt><dd id="infoStatus"></dd>
+                <dt>Jumlah menu</dt><dd id="infoMenu"></dd>
+                <dt>Diperbarui</dt><dd id="infoWaktu"></dd>
+                <dt class="khusus-super" title="Terakhir ALAT-PEMULIHAN menu 1 menyimpan data + semua foto">Cadangan lengkap</dt><dd class="khusus-super" id="infoCadangan"></dd>
+              </dl>
+              <a class="akun-item" href="https://nilaigizi-ib1sa3.daniabdani1.workers.dev/" target="_blank" rel="noopener noreferrer"><svg class="ikon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>Lihat situs publik</a>
+              <button type="button" class="akun-item khusus-super" data-klik="panel" data-arg="pengguna"><svg class="ikon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c2 .7 3.2 2.6 3.5 5.2"/></svg>Kelola pengguna<small>tambah admin, reset password, sesi aktif</small></button>
+              <button type="button" class="akun-item khusus-super" data-klik="panel" data-arg="pulih"><svg class="ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Titik pulih harian<small>kembalikan data ke kondisi hari sebelumnya</small></button>
+              <button type="button" class="akun-item" data-klik="panel" data-arg="riwayat"><svg class="ikon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Riwayat login<small>waktu, IP, lokasi, perangkat</small></button>
+              <button type="button" class="akun-item" data-klik="logout"><svg class="ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Logout<small>kembali ke layar login</small></button>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <div class="pilih-bar" id="pilihBar" hidden>
+      <span id="pilihInfo"></span>
+      <button class="btn ghost small" data-klik="batalPilih">Batal pilih</button>
+      <button class="btn danger small" data-klik="hapusTerpilih">Hapus terpilih</button>
+    </div>
+
+    <div class="panel">
+      <div class="table-wrap">
+        <table class="tabel-menu">
+          <thead>
+            <tr>
+              <th class="kol-cek"><label class="cek"><input type="checkbox" id="cekSemua" data-ubah="pilihSemua" aria-label="Pilih semua menu hasil filter"><span class="cek-teks">Pilih semua</span></label></th>
+              <th>Gambar</th><th>Tanggal</th><th>Nama Menu</th><th>Energi B/K<br>(kkal)</th><th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="menuBody"></tbody>
+        </table>
+      </div>
+      <div class="lagi">
+        <button class="btn ghost" id="btnLagi" hidden data-klik="lagi"></button>
+      </div>
+    </div>
+
+    <h2 class="section-title judul-kontak">Kontak &amp; Media Sosial <span class="none">(opsional)</span></h2>
+    <div class="panel">
+      <div class="sosmed-form">
+        <select id="sosPlatform" aria-label="Platform"></select>
+        <input type="text" id="sosJudul" maxlength="40" placeholder="Judul tautan" aria-label="Judul tautan baru">
+        <input type="text" id="sosUrl" placeholder="https://... atau nomor WA" aria-label="Tautan baru">
+        <button class="btn" data-klik="sosTambah">+ Tambah</button>
+      </div>
+      <div class="error-msg" id="err-sos"></div>
+      <div class="sosmed-admin" id="sosList"></div>
+      <p class="none" id="sosInfo"></p>
+    </div>
+  </div>
+</div>
+</main>
+
+<div class="modal-overlay" id="modalForm">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h2 id="modalTitle">Tambah Menu</h2>
+    <div class="field">
+      <label class="req" for="fTanggal">Tanggal Menu</label>
+      <div class="baris-tanggal">
+        <input type="date" id="fTanggal">
+        <button type="button" class="btn ghost small" data-klik="hariIni" title="Isi dengan tanggal hari ini">Hari ini</button>
+      </div>
+      <div class="error-msg" id="err-fTanggal">Tanggal menu wajib diisi</div>
+    </div>
+    <div class="field">
+      <label class="req" for="fNama">Nama Menu</label>
+      <input type="text" id="fNama">
+      <div class="error-msg" id="err-fNama">Nama menu wajib diisi</div>
+    </div>
+    <div class="field">
+      <label class="req" for="fBesarKalori">Nilai Gizi per Porsi</label>
+      <div class="gizi-grid" id="giziRows" role="group" aria-label="Nilai gizi per porsi"></div>
+      <p class="gizi-petunjuk" id="giziHitung" hidden></p>
+      <p class="none gizi-petunjuk">Desimal boleh pakai koma atau titik. Kolom bertanda <span class="wajib">*</span> wajib diisi; Serat yang dikosongkan dihitung 0.</p>
+      <div class="error-msg" id="err-fGizi"></div>
+      <div class="notice bahaya" id="giziWarning" hidden></div>
+    </div>
+    <div class="field">
+      <label for="fDeskripsi">Deskripsi</label>
+      <textarea id="fDeskripsi"></textarea>
+    </div>
+    <div class="field">
+      <label for="fGambar">Upload Gambar (JPG/PNG)</label>
+      <div class="unggah">
+        <input type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png" id="fGambar" data-ubah="foto">
+        <svg class="ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V5M7.5 9.5 12 5l4.5 4.5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+        <span id="fGambarTeks">Pilih foto</span>
+      </div>
+      <img id="fGambarPreview" class="preview-img" alt="">
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" data-klik="batal">Batal</button>
+      <button class="btn" id="simpanBtn" data-klik="simpan">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="panel">
+  <div class="modal lebar" role="dialog" aria-modal="true" aria-labelledby="panelJudul">
+    <div class="panel-kepala">
+      <h2 id="panelJudul">Panel</h2>
+      <button type="button" class="btn ghost small" data-klik="tutupPanel">Tutup</button>
+    </div>
+    <div class="tab khusus-super" id="panelTab" role="tablist">
+      <button type="button" role="tab" data-tab="pengguna">Pengguna</button>
+      <button type="button" role="tab" data-tab="sesi">Sesi aktif</button>
+      <button type="button" role="tab" data-tab="riwayat">Riwayat login</button>
+      <button type="button" role="tab" data-tab="pulih">Titik pulih</button>
+    </div>
+    <div id="panelIsi"></div>
+  </div>
+</div>
+
+<dialog class="dlg" id="dlg" aria-labelledby="dlgJudul" aria-describedby="dlgPesan">
+  <div class="dlg-isi">
+    <div class="dlg-ikon" id="dlgIkon" aria-hidden="true"></div>
+    <h2 id="dlgJudul"></h2>
+    <p class="dlg-pesan" id="dlgPesan"></p>
+    <label class="dlg-ketik" id="dlgKetikLabel" for="dlgKetik" hidden></label>
+    <input type="text" id="dlgKetik" autocomplete="off" autocapitalize="characters" spellcheck="false" hidden>
+    <div class="error-msg" id="dlgGalat"></div>
+    <div class="dlg-aksi">
+      <button type="button" class="btn ghost" id="dlgTidak" data-klik="dlgTidak"></button>
+      <button type="button" class="btn" id="dlgYa" data-klik="dlgYa"></button>
+    </div>
+  </div>
+</dialog>
+
+<script src="data.js"></script>
+<script src="core.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

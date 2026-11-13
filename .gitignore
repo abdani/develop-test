@@ -1,0 +1,8 @@
+# Allowlist: the repo holds exactly what gets deployed. Sources, secrets, backups, docs, tests and tools stay local.
+/*
+!/.gitignore
+!/.gitattributes
+!/README.md
+!/worker-api.js
+!/UNTUK-UPLOAD/
+!/UNTUK-UPLOAD-ADMIN/

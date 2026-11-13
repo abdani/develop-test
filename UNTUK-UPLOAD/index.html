@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-IE/Bq75H0b87RfvjIbRvTL0y/wtt3hv51aWgn4OI5/k='; style-src 'self'; img-src 'self' data: https://nilaigizi-api.daniabdani1.workers.dev; font-src 'self'; connect-src https://nilaigizi-api.daniabdani1.workers.dev; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Informasi Gizi MBG - BGN</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7a1420">
+<meta name="apple-mobile-web-app-title" content="Gizi MBG">
+<script>var dataAwal = fetch('https://nilaigizi-api.daniabdani1.workers.dev/data', { cache: 'no-store' }); dataAwal.catch(function(){});</script>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-isi">
+    <picture><source srcset="maskot.avif" type="image/avif"><img class="maskot" src="maskot.webp" alt="" width="224" height="240"></picture>
+    <div>
+      <h1>Informasi Gizi Menu&nbsp;MBG</h1>
+      <p class="sppg">SPPG Kota Palembang Ilir Barat Satu Siringagung&nbsp;3</p>
+    </div>
+  </div>
+</header>
+
+<main>
+<div class="notice" id="draftNotice" hidden></div>
+
+<div class="wrap">
+  <div class="toolbar">
+    <input type="search" class="search" id="search" placeholder="Cari menu..." aria-label="Cari menu, deskripsi, tanggal, atau hari">
+    <select id="filterBulan" aria-label="Filter bulan"></select>
+  </div>
+
+  <section class="featured" id="featured" hidden>
+    <div class="featured-head">
+      <h2 id="featuredTitle">Menu Hari Ini</h2>
+      <span class="date-chip" id="featuredTanggal"></span>
+    </div>
+    <div class="featured-grid">
+      <div class="featured-thumb" id="featuredThumb"></div>
+      <div>
+        <h3 id="featuredNama"></h3>
+        <p class="desc" id="featuredDesc"></p>
+        <table class="gizi-compare">
+          <thead><tr><th>Zat Gizi</th><th>Porsi Besar</th><th>Porsi Kecil</th></tr></thead>
+          <tbody id="featuredGizi"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <h2 class="section-title" id="gridTitle" hidden>Menu Sebelumnya</h2>
+  <div class="grid" id="menuGrid"></div>
+  <div class="lagi">
+    <button class="btn ghost" id="btnLagi" hidden></button>
+  </div>
+  <p class="none pesan-kosong" id="emptyMsg" hidden>Belum ada menu tersedia.</p>
+</div>
+</main>
+
+<footer class="site" id="kontak" hidden>
+  <h2 class="kontak-judul">Kontak</h2>
+  <div class="sosmed" id="sosmedBar"></div>
+</footer>
+
+<div class="modal-overlay" id="modalDetail">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="detailNama" tabindex="-1">
+    <div class="featured-thumb" id="detailThumb"></div>
+    <span class="date-chip" id="detailTanggal"></span>
+    <h2 id="detailNama"></h2>
+    <p id="detailDesc"></p>
+    <table class="gizi-compare">
+      <thead><tr><th>Zat Gizi</th><th>Porsi Besar</th><th>Porsi Kecil</th></tr></thead>
+      <tbody id="detailGizi"></tbody>
+    </table>
+    <div class="modal-actions">
+      <button class="btn" id="btnTutup">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<script src="core.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

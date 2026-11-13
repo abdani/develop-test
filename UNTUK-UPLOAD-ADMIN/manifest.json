@@ -1,0 +1,14 @@
+{
+  "id": "/",
+  "name": "Admin Gizi MBG - SPPG Siringagung 3",
+  "short_name": "Admin Gizi",
+  "lang": "id",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#faf7f2",
+  "theme_color": "#7a1420",
+  "icons": [{ "src": "ikon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "ikon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "ikon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }]
+}
