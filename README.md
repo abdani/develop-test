@@ -2,6 +2,17 @@
 
 Information website with an admin panel, built and maintained by **Dani Abdani** ([@abdani](https://github.com/abdani)).
 
+A fully **serverless** web app on **Cloudflare Workers**: static pages served from the edge, a small JavaScript API Worker, and **Workers KV** for storage. No servers to manage, no frameworks, no build step.
+
+## Highlights
+
+- Serverless architecture on the Cloudflare free tier (Workers + Workers KV)
+- Vanilla JavaScript, HTML and CSS with zero dependencies
+- Responsive from 320 px phones to desktop, with a web app manifest for home-screen install
+- Strict Content Security Policy and hardened security headers
+- Admin panel with roles, session control and an activity log
+- Accessibility checked with axe-core (WCAG 2.1 AA)
+
 ## Structure
 
 Every path is deployed as-is to its own Cloudflare Worker.
