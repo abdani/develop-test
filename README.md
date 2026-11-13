@@ -6,7 +6,7 @@ A fully **serverless** web app on **Cloudflare Workers**: static pages served fr
 
 ## Highlights
 
-- Serverless architecture on the Cloudflare free tier (Workers + Workers KV)
+- Serverless architecture on the Cloudflare tier (Workers + Workers KV)
 - Vanilla JavaScript, HTML and CSS with zero dependencies
 - Responsive from 320 px phones to desktop, with a web app manifest for home-screen install
 - Strict Content Security Policy and hardened security headers
