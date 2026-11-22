@@ -107,6 +107,8 @@
       </div>
     </div>
 
+    <button type="button" class="pengingat-foto" id="pengingatFoto" data-klik="tanpaFoto" aria-pressed="false" hidden></button>
+
     <div class="pilih-bar" id="pilihBar" hidden>
       <span id="pilihInfo"></span>
       <button class="btn ghost small" data-klik="batalPilih">Batal pilih</button>
@@ -181,7 +183,10 @@
         <svg class="ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V5M7.5 9.5 12 5l4.5 4.5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
         <span id="fGambarTeks">Pilih foto</span>
       </div>
-      <img id="fGambarPreview" class="preview-img" alt="">
+      <div class="pratinjau">
+        <img id="fGambarPreview" class="preview-img" alt="">
+        <button type="button" class="hapus-foto" id="hapusFoto" data-klik="hapusFoto" aria-label="Hapus foto" title="Hapus foto" hidden>&times;</button>
+      </div>
     </div>
     <div class="modal-actions">
       <button class="btn ghost" data-klik="batal">Batal</button>

@@ -155,6 +155,32 @@ $('menuGrid').addEventListener('click', e => {
 });
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeDetail(); });
 
+// Clipboard API first; a hidden textarea + execCommand covers in-app browsers that lack or refuse it
+async function salin(btn){
+  const teks = $(btn.dataset.salin).textContent.trim();
+  let ok = false;
+  try{ await navigator.clipboard.writeText(teks); ok = true; }
+  catch(e){
+    const t = document.createElement('textarea');
+    t.value = teks;
+    t.readOnly = true;
+    t.className = 'salin-cadangan';
+    document.body.append(t);
+    t.select();
+    t.setSelectionRange(0, teks.length);
+    try{ ok = document.execCommand('copy'); }catch(e){}
+    t.remove();
+    btn.focus();
+  }
+  const pesan = btn.nextElementSibling;
+  pesan.textContent = ok ? 'Tersalin' : 'Gagal menyalin';
+  btn.classList.toggle('ok', ok);
+  btn.classList.add('tampil');
+  clearTimeout(btn.timer);
+  btn.timer = setTimeout(() => { btn.classList.remove('tampil', 'ok'); pesan.textContent = 'Salin'; }, 1600);
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-salin]'); if(b) salin(b); });
+
 $('search').addEventListener('input', renderDariAwal);
 $('filterBulan').addEventListener('change', renderDariAwal);
 // KV can be ~60 s stale anyway: switching apps back and forth should not re-download every menu

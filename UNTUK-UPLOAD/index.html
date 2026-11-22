@@ -43,7 +43,11 @@
     <div class="featured-grid">
       <div class="featured-thumb" id="featuredThumb"></div>
       <div>
-        <h3 id="featuredNama"></h3>
+        <div class="nama-baris">
+          <h3 id="featuredNama"></h3>
+          <button type="button" class="salin" data-salin="featuredNama" aria-label="Salin nama menu"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg></button>
+          <span class="salin-pesan" role="status">Salin</span>
+        </div>
         <p class="desc" id="featuredDesc"></p>
         <table class="gizi-compare">
           <thead><tr><th>Zat Gizi</th><th>Porsi Besar</th><th>Porsi Kecil</th></tr></thead>
@@ -71,7 +75,11 @@
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="detailNama" tabindex="-1">
     <div class="featured-thumb" id="detailThumb"></div>
     <span class="date-chip" id="detailTanggal"></span>
-    <h2 id="detailNama"></h2>
+    <div class="nama-baris">
+      <h2 id="detailNama"></h2>
+      <button type="button" class="salin" data-salin="detailNama" aria-label="Salin nama menu"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg></button>
+      <span class="salin-pesan" role="status">Salin</span>
+    </div>
     <p id="detailDesc"></p>
     <table class="gizi-compare">
       <thead><tr><th>Zat Gizi</th><th>Porsi Besar</th><th>Porsi Kecil</th></tr></thead>

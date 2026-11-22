@@ -295,11 +295,20 @@ let jumlahTampil = PER_HALAMAN;
 let menuUrut = [];
 let hasilFilter = [];
 let dipilih = new Set();
+let hanyaTanpaFoto = false;
+// future menus are skipped: their photo can only be taken on the day
+const perluFoto = m => !gambarSrc(m) && (!m.tanggal || m.tanggal <= hariIni());
 
 function render(){
   const q = kataCari($('search'));
   const bulan = $('filterBulan').value;
-  const semua = menuUrut.filter(m => cocokCari(m, q) && cocokBulan(m, bulan));
+  const kurangFoto = menuUrut.filter(perluFoto).length;
+  if(!kurangFoto) hanyaTanpaFoto = false;
+  const tombol = $('pengingatFoto');
+  tombol.hidden = !kurangFoto;
+  tombol.textContent = hanyaTanpaFoto ? 'Tampilkan semua menu' : `${kurangFoto} menu belum ada foto`;
+  tombol.setAttribute('aria-pressed', hanyaTanpaFoto);
+  const semua = menuUrut.filter(m => cocokCari(m, q) && cocokBulan(m, bulan) && (!hanyaTanpaFoto || perluFoto(m)));
   hasilFilter = semua;
   const adaDiFilter = new Set(semua.map(m => m.id));
   dipilih = new Set([...dipilih].filter(id => adaDiFilter.has(id)));
@@ -312,7 +321,7 @@ function render(){
       <td class="kol-cek"><input type="checkbox" name="pilih" value="${angka(m.id)}" aria-label="Pilih ${esc(m.nama)}"${dipilih.has(m.id) ? ' checked' : ''} data-ubah="pilih"></td>
       <td>${fotoMenu(m, 'loading="lazy" decoding="async" class="foto-kecil"')}</td>
       <td>${m.tanggal ? `<span class="tgl-panjang">${esc(formatTanggal(m.tanggal))}</span><span class="tgl-pendek">${esc(tanggalPendek(m.tanggal))}</span>` : '<span class="none">Belum diisi</span>'}</td>
-      <td>${esc(m.nama)}</td>
+      <td>${esc(m.nama)}${perluFoto(m) ? ' <span class="lencana-foto">Tanpa foto</span>' : ''}</td>
       <td>${angka(m.gizi.besar.kalori)} / ${angka(m.gizi.kecil.kalori)}</td>
       <td>
         <button class="btn ghost small" data-klik="edit" data-arg="${angka(m.id)}">Edit</button>
@@ -332,7 +341,7 @@ function perbaruiPilihan(){
   if(!n) return;
   const terlihat = Math.min(total, jumlahTampil);
   const tersembunyi = n - hasilFilter.slice(0, terlihat).filter(m => dipilih.has(m.id)).length;
-  const filter = $('filterBulan').value || $('search').value.trim();
+  const filter = $('filterBulan').value || $('search').value.trim() || hanyaTanpaFoto;
   $('pilihInfo').textContent = `${n} menu dipilih`
     + (n === total && filter ? ' (semua hasil filter)' : n === menuUrut.length ? ' (SEMUA menu)' : '')
     + (tersembunyi ? ` - ${tersembunyi} belum tampil di tabel` : '');
@@ -512,6 +521,17 @@ function aturPratinjau(src){
   p.src = src;
   p.style.display = src ? 'block' : 'none';
   $('fGambarTeks').textContent = src ? 'Ganti foto' : 'Pilih foto';
+  const x = $('hapusFoto'), label = fotoBaru ? 'Batalkan foto baru' : 'Hapus foto';
+  x.hidden = !src;
+  x.setAttribute('aria-label', label);
+  x.title = label;
+}
+// first press drops a newly picked photo (the saved one returns), the next removes the saved photo
+function hapusFoto(){
+  $('fGambar').value = '';   // also aborts a photo still being processed (previewImage checks the input)
+  if(!fotoBaru) $('fGambar').dataset.path = '';
+  fotoBaru = null;
+  aturPratinjau(gambarSrc({ gambar: $('fGambar').dataset.path }));
 }
 function tolakFoto(){
   $('fGambar').value = '';
@@ -570,7 +590,7 @@ function openModal(id){
 }
 let formAwal = '';
 const isiForm = () => JSON.stringify([...$('modalForm').querySelectorAll('input:not([type=file]), textarea')].map(e => e.value)
-                                     .concat(fotoBaru ? '1' : ''));
+                                     .concat(fotoBaru ? '1' : '', $('fGambar').dataset.path));
 function closeModal(){ $('modalForm').classList.remove('open'); }
 async function tutupForm(){
   if(isiForm() !== formAwal && !await tanya({ jenis: 'bahaya', judul: 'Buang perubahan?',
@@ -908,7 +928,8 @@ const KLIK = {
   login: tryLogin, mata: (_, b) => lihatPassword(b), notif: bukaNotif, aktivitas: () => muatAktivitas(true),
   muat: muatDariServer, cadangkan: exportData, pulihkan: () => $('importFile').click(), tambah: () => openModal(),
   panel: bukaPanel, logout, batalPilih, hapusTerpilih: () => hapusMenu([...dipilih]), lagi: () => { jumlahTampil += PER_HALAMAN; render(); },
-  sosTambah: tambahSosmed, hariIni: setHariIni, batal: tutupForm, simpan: saveForm, tutupPanel,
+  sosTambah: tambahSosmed, hariIni: setHariIni, batal: tutupForm, simpan: saveForm, tutupPanel, hapusFoto,
+  tanpaFoto: () => { hanyaTanpaFoto = !hanyaTanpaFoto; jumlahTampil = PER_HALAMAN; render(); },
   dlgTidak: () => $('dlg').close(), dlgYa: () => $('dlg').close('ya'),
   edit: id => openModal(Number(id)), hapus: id => hapusMenu([Number(id)]), sosHapus: i => hapusSosmed(Number(i))
 };
