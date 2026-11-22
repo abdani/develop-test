@@ -172,12 +172,13 @@ async function salin(btn){
     t.remove();
     btn.focus();
   }
-  const pesan = btn.nextElementSibling;
-  pesan.textContent = ok ? 'Tersalin' : 'Gagal menyalin';
+  const label = btn.lastElementChild, pesan = btn.nextElementSibling;   // visible label; screen-reader status
+  label.textContent = ok ? 'Tersalin' : 'Gagal';
+  pesan.textContent = ok ? 'Nama menu tersalin' : 'Gagal menyalin';
   btn.classList.toggle('ok', ok);
-  btn.classList.add('tampil');
+  btn.classList.toggle('gagal', !ok);
   clearTimeout(btn.timer);
-  btn.timer = setTimeout(() => { btn.classList.remove('tampil', 'ok'); pesan.textContent = 'Salin'; }, 1600);
+  btn.timer = setTimeout(() => { btn.classList.remove('ok', 'gagal'); label.textContent = 'Salin'; pesan.textContent = ''; }, 1600);
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-salin]'); if(b) salin(b); });
 

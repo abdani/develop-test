@@ -301,17 +301,17 @@ body.super #gandaNotice,#cadanganNotice{width:calc(100% - 16px);max-width:1264px
 .nama-baris{position:relative;display:flex;align-items:flex-start;gap:8px;margin:0 0 8px;}
 .nama-baris > :first-child{flex:1;min-width:0;}
 .modal .nama-baris{margin:10px 0 6px;}
-.salin{flex:none;width:32px;height:32px;padding:0;display:grid;place-items:center;
+/* min-width fits "Tersalin", so the label swap never reflows the name */
+.salin{flex:none;min-width:88px;height:32px;padding:0 10px;display:inline-flex;align-items:center;justify-content:center;gap:5px;
   border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--maroon);cursor:pointer;
-  -webkit-tap-highlight-color:transparent;transition:background .15s,color .15s;}
-.salin svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  font:inherit;font-size:12.5px;font-weight:600;white-space:nowrap;
+  -webkit-tap-highlight-color:transparent;transition:background .15s,color .15s,border-color .15s;}
+.salin svg{flex:none;width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 .salin:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
-.salin.ok{color:var(--ok);border-color:var(--ok);}
-.salin-pesan{position:absolute;right:40px;top:5px;padding:3px 9px;border-radius:6px;
-  background:var(--text);color:#fff;font-size:12px;font-weight:600;white-space:nowrap;pointer-events:none;
-  opacity:0;transform:translateY(3px);transition:opacity .15s,transform .15s;}
-.salin:focus-visible + .salin-pesan,.salin.tampil + .salin-pesan{opacity:1;transform:none;}
-@media (hover:hover){.salin:hover{background:var(--gold-pale);} .salin:hover + .salin-pesan{opacity:1;transform:none;}}
+.salin.ok{color:var(--ok);border-color:var(--ok);background:#eef6f0;}
+.salin.gagal{color:var(--bad);border-color:var(--bad);}
+@media (hover:hover){.salin:hover{background:var(--gold-pale);}}
+.salin-pesan{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
 .salin-cadangan{position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none;}
 .featured .desc{font-size:13.5px;color:var(--muted);margin:0 0 14px;}
 
