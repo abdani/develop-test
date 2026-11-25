@@ -304,10 +304,13 @@ function render(){
   const bulan = $('filterBulan').value;
   const kurangFoto = menuUrut.filter(perluFoto).length;
   if(!kurangFoto) hanyaTanpaFoto = false;
-  const tombol = $('pengingatFoto');
-  tombol.hidden = !kurangFoto;
-  tombol.textContent = hanyaTanpaFoto ? 'Tampilkan semua menu' : `${kurangFoto} menu belum ada foto`;
-  tombol.setAttribute('aria-pressed', hanyaTanpaFoto);
+  const teksPanjang = hanyaTanpaFoto ? 'Tampilkan semua menu' : `${kurangFoto} menu belum ada foto`;
+  document.querySelectorAll('.pengingat-foto').forEach(b => {   // one sits by the status bar, the phone one by Tambah Menu
+    b.hidden = !kurangFoto;
+    b.textContent = !b.classList.contains('pengingat-hp') ? teksPanjang : hanyaTanpaFoto ? 'Semua menu' : `${kurangFoto} tanpa foto`;
+    b.title = teksPanjang;
+    b.setAttribute('aria-pressed', hanyaTanpaFoto);
+  });
   const semua = menuUrut.filter(m => cocokCari(m, q) && cocokBulan(m, bulan) && (!hanyaTanpaFoto || perluFoto(m)));
   hasilFilter = semua;
   const adaDiFilter = new Set(semua.map(m => m.id));
