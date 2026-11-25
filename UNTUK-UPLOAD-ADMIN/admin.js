@@ -183,7 +183,7 @@ let editingId = null;
 let versiServer;
 
 function status(pesan, jenis){
-  $('statusBar').className = 'notice' + (jenis === 'bahaya' ? ' bahaya' : '');
+  $('statusBar').className = 'notice' + (jenis ? ' ' + jenis : '');
   tampilTeks('statusBar', pesan);
 }
 
@@ -199,7 +199,7 @@ async function muatDariServer(){
       sosmedData = publishedSosmed();
       status('Server masih kosong. Data dari cadangan data.js dimuat - klik Simpan pada salah satu menu untuk mengirimkannya.', 'bahaya');
     } else {
-      status(d.diperbarui ? 'Tersinkron. Terakhir diperbarui ' + new Date(d.diperbarui).toLocaleString('id-ID') : 'Tersinkron.');
+      status(d.diperbarui ? 'Synced, Last Updated ' + new Date(d.diperbarui).toLocaleString('id-ID') : 'Synced', 'ok');
     }
   }catch(e){
     menuData = publishedMenus();
@@ -304,13 +304,11 @@ function render(){
   const bulan = $('filterBulan').value;
   const kurangFoto = menuUrut.filter(perluFoto).length;
   if(!kurangFoto) hanyaTanpaFoto = false;
-  const teksPanjang = hanyaTanpaFoto ? 'Tampilkan semua menu' : `${kurangFoto} menu belum ada foto`;
-  document.querySelectorAll('.pengingat-foto').forEach(b => {   // one sits by the status bar, the phone one by Tambah Menu
-    b.hidden = !kurangFoto;
-    b.textContent = !b.classList.contains('pengingat-hp') ? teksPanjang : hanyaTanpaFoto ? 'Semua menu' : `${kurangFoto} tanpa foto`;
-    b.title = teksPanjang;
-    b.setAttribute('aria-pressed', hanyaTanpaFoto);
-  });
+  const tombol = document.querySelector('.pengingat-foto');
+  tombol.hidden = !kurangFoto;
+  tombol.textContent = hanyaTanpaFoto ? 'Tampilkan semua' : `${kurangFoto} Belum ada Foto`;
+  tombol.title = hanyaTanpaFoto ? 'Tampilkan semua menu' : `${kurangFoto} menu belum ada foto - klik untuk menampilkannya`;
+  tombol.setAttribute('aria-pressed', hanyaTanpaFoto);
   const semua = menuUrut.filter(m => cocokCari(m, q) && cocokBulan(m, bulan) && (!hanyaTanpaFoto || perluFoto(m)));
   hasilFilter = semua;
   const adaDiFilter = new Set(semua.map(m => m.id));
